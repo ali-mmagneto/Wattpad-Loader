@@ -126,12 +126,14 @@ def save_kitap_to_formats(file_name, story_name, author, cover, tags, summary, c
                 <h2>Chapter {i + 1}: '{chapter['title']}'</h2><br><br>
                 {soup_res.prettify()}
             """)
-            c1.content = (f"""
+            n = i + 1
+            n = epub.EpubHtml(title="Intro", file_name=f"chap_0{i + 1}.xhtml", lang="hr")
+            n.content = (f"""
                 <br><br>
                 <h2>Chapter {i + 1}: '{chapter['title']}'</h2><br><br>
                 {soup_res.prettify()}
             """)
-            book.add_item(c1)
+            book.add_item(n)
     file.write("</body></html>")
     file.close()
     try:
