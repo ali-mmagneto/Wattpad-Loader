@@ -6,6 +6,9 @@ import os
 from pyrogram import Client, filters
 import aspose.words as aw
 from ebooklib import epub
+from datetime import date
+
+
 
 base_apiV2_url = "https://www.wattpad.com/apiv2/"
 base_apiV3_url = "https://www.wattpad.com/api/v3/"
@@ -144,20 +147,21 @@ async def main(id):
     # Saving HTML file.
     html_file_name = f"{story_name}.html"
     html_file_name = html_file_name.replace('/', ' ')
+    tarih = date.today() 
+    capt = f"{author["name"]} - {story_name}\n\n#wattpad {tarih}"
     html = save_kitap_to_formats(html_file_name, story_name, author, cover, tags, summary, chapters)
     epub = epubyap(html)
 
-    return epub, html
+    return epub, html, capt
 
 @Client.on_message(filters.command("dl"))
 async def wpdl(bot, message):
     id = message.text.split(" ")[1]
     try:
         m = await message.reply_text("Kitap İndiriliyor..")
-        epub, html = await main(id)
+        epub, html, capt = await main(id)
         await m.edit("Kitap Yükleniyor..")
         if epub != "yok":
-            capt = f"{epub}\n\n#wattpad"
             await message.reply_document(
                 document=epub,
                 caption=capt
@@ -165,7 +169,6 @@ async def wpdl(bot, message):
             os.remove(epub)
         else:
             await message.reply_text("bu kitabı epub yapamadım..")
-        capt = f"{html}\n\n#wattpad"
         await message.reply_document(
             document=html,
             caption=capt
