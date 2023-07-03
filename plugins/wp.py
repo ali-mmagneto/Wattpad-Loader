@@ -92,7 +92,7 @@ def save_html_file(file_name, story_name, author, cover, tags, summary, chapters
     file.write("</body></html>")
     file.close()
     print(f"Saved {file_name}")
-    return file_name
+    return file_name, file_name
 
 
 def save_epub_file(html_file, story_name, cover):
@@ -104,7 +104,7 @@ def save_epub_file(html_file, story_name, cover):
     book = epub.EpubBook()
 
     # set metadata
-    book.set_title(f"{story_name")
+    book.set_title(story_name)
     book.set_language("en")
     with open(html_file, 'r') as dosya:
         content = dosya.read()
@@ -153,11 +153,11 @@ async def main(id):
     # Saving HTML file.
     html_file_name = f"{story_name}.html"
     html_file_name = html_file_name.replace('/', ' ')
-    html = save_html_file(html_file_name, story_name, author, cover, tags, summary, chapters)
+    html, name= save_html_file(html_file_name, story_name, author, cover, tags, summary, chapters)
 
     # Converting HTML to EPUB.
     try:
-        epub = save_epub_file(html_file_name, story_name, cover)
+        epub = save_epub_file(name, story_name, cover)
     except Exception as e:
         print(e)
         epub = "yok"
