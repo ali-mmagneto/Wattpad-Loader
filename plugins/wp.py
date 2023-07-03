@@ -115,7 +115,7 @@ def save_kitap_to_formats(file_name, story_name, author, cover, tags, summary, c
         </div>
     """)
     book.add_item(c1)
-    for i, chapter in enumerate(chapters):
+    for i, chapter in chapters:
         print(f"Getting Chapter {i + 1}....")
         chapter_url = base_apiV2_url + f"storytext?id={chapter['id']}"
         chapter_content = download_webpage(chapter_url)
@@ -123,10 +123,10 @@ def save_kitap_to_formats(file_name, story_name, author, cover, tags, summary, c
             soup_res = bs4.BeautifulSoup(chapter_content, 'html.parser')
             file.write(f"""
                 <br><br>
-                <h2>Chapter {i + 1}: '{chapter['title']}'</h2><br><br>
+                <h2>'{chapter['title']}'</h2><br><br>
                 {soup_res.prettify()}
             """)
-            n = f"0000000{i + 1}"
+            n = f"n{i + 1}"
             n = epub.EpubHtml(title="Intro", file_name=f"chap_0000000{i + 1}.xhtml", lang="hr")
             n.content = (f"""
                 <br><br>
