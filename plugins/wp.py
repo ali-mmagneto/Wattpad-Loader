@@ -167,7 +167,7 @@ async def wpdl(bot, message):
         capt = f"{html}\n\n#wattpad"
         await message.reply_document(
             document=html,
-            caption=html
+            caption=capt
         )
         await m.edit("Kitap Yüklendi..")
     except Exception as e:
