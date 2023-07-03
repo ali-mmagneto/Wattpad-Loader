@@ -87,7 +87,7 @@ def save_kitap_to_formats(file_name, story_name, author, cover, tags, summary, c
     book.set_title(story_name)
     book.set_language("tr")
     # create chapter
-    c1 = epub.EpubHtml(title="Intro", file_name="chap_01.xhtml", lang="hr")
+    c1 = epub.EpubHtml(title="Intro", file_name="chap_.xhtml", lang="hr")
     c1.content = (f"""
         <html>
         <head>
