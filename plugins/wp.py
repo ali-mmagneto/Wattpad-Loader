@@ -162,6 +162,7 @@ async def wpdl(bot, message):
                 document=epub,
                 caption=capt
             )
+            os.remove(epub)
         else:
             await message.reply_text("bu kitabı epub yapamadım..")
         capt = f"{html}\n\n#wattpad"
@@ -169,6 +170,7 @@ async def wpdl(bot, message):
             document=html,
             caption=capt
         )
+        os.remove(html)
         await m.edit("Kitap Yüklendi..")
     except Exception as e:
         await message.reply_text(e)
