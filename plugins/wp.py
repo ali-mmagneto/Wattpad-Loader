@@ -47,7 +47,7 @@ def extract_useful_data(json_data):
     return summary, tags, chapters, storyName, author, cover
 
 
-def save_html_file(file_name, story_name, author, cover, tags, summary, chapters):
+def save_kitap_to_formats(file_name, story_name, author, cover, tags, summary, chapters):
     """Saves the HTML file with the given data."""
     name = file_name.replace(" ", ".").replace(":", "").replace("|", "").replace("..",".")
     file = open(name, 'w', encoding='utf-8')
@@ -78,6 +78,43 @@ def save_html_file(file_name, story_name, author, cover, tags, summary, chapters
             </h6>
         </div>
     """)
+    output_file = name.split(".html")[0] + ".epub"
+    
+
+    book = epub.EpubBook()
+
+    # set metadata
+    book.set_title(story_name)
+    book.set_language("tr")
+    # create chapter
+    c1 = epub.EpubHtml(title="Intro", file_name="chap_01.xhtml", lang="hr")
+    c1.content = (f"""
+        <html>
+        <head>
+            <meta name='title' content='{story_name}'>
+            <meta name='author' content='{author["name"]}' >
+        </head>
+        <body>
+        <div style="text-align:center;">
+            <img src="{cover}" alt="cover_image">
+        </div>
+        <br>
+        <h5 align="center">{story_name}</h5>
+        <h6 align="center">By {author["name"]} : <a href="https://www.wattpad.com/user/{author["username"]}">{author["username"]}</a></h6>
+
+        <div align="center">Tags: {tags} </div>
+        <br><br>
+        <div align="center">{summary}</div>
+        
+        <br><br>
+        <div align="left">
+            <h6>
+                * İyi Okumalar...
+                * Bu Kitap @WattpadloaderBot Kullanılarak İndirilmiştir..<br>
+            </h6>
+        </div>
+    """)
+    book.add_item(c1)
     for i, chapter in enumerate(chapters):
         print(f"Getting Chapter {i + 1}....")
         chapter_url = base_apiV2_url + f"storytext?id={chapter['id']}"
@@ -89,35 +126,22 @@ def save_html_file(file_name, story_name, author, cover, tags, summary, chapters
                 <h2>Chapter {i + 1}: '{chapter['title']}'</h2><br><br>
                 {soup_res.prettify()}
             """)
+            c1.content = (f"""
+                <br><br>
+                <h2>Chapter {i + 1}: '{chapter['title']}'</h2><br><br>
+                {soup_res.prettify()}
+            """)
+            book.add_item(c1)
     file.write("</body></html>")
     file.close()
-    print(f"Saved {file_name}")
-    return file_name, file_name
-
-
-def save_epub_file(html_file, story_name, cover):
-    """Converts the HTML file to EPUB format and saves it."""
-    print("Generating EPUB...")
-    output_file = html_file.split(".html")[0] + ".epub"
-    
-
-    book = epub.EpubBook()
-
-    # set metadata
-    book.set_title(story_name)
-    book.set_language("en")
-    with open(html_file, 'r') as dosya:
-        content = dosya.read()
-    # create chapter
-    c1 = epub.EpubHtml(title="Intro", file_name="chap_01.xhtml", lang="hr")
-    c1.content = (content)
-    book.add_item(c1)
     try:
         epub.write_epub(output_file, book, {}) 
     except Exception as e:
-        print(e) 
-        output_file = "yok" 
-    return output_file
+        print(e)
+        output_file = "yok"
+    print(f"Saved {file_name}")
+    print(f"Saved {output_file}")
+    return file_name, output_file
     
     
 async def main(id):
@@ -153,14 +177,8 @@ async def main(id):
     # Saving HTML file.
     html_file_name = f"{story_name}.html"
     html_file_name = html_file_name.replace('/', ' ')
-    html, name= save_html_file(html_file_name, story_name, author, cover, tags, summary, chapters)
+    html, epub = save_kitap_to_formats(html_file_name, story_name, author, cover, tags, summary, chapters)
 
-    # Converting HTML to EPUB.
-    try:
-        epub = save_epub_file(name, story_name, cover)
-    except Exception as e:
-        print(e)
-        epub = "yok"
     return epub, html
 
 @Client.on_message(filters.command("dl"))
