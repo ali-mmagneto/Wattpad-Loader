@@ -48,7 +48,7 @@ def extract_useful_data(json_data):
 def save_kitap_to_formats(file_name, story_name, author, cover, tags, summary, chapters):
     """Saves the HTML file with the given data."""
     name = file_name.replace(" ", ".").replace(":", "").replace("|", "").replace("..",".")
-    file = open(name, 'r+', encoding='utf-8')
+    file = open(name, 'w', encoding='utf-8')
     file_name = name
     file.write(f"""
         <html>
