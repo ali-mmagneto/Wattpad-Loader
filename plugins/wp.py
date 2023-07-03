@@ -98,12 +98,27 @@ def save_epub_file(html_file, story_name, cover):
     """Converts the HTML file to EPUB format and saves it."""
     print("Generating EPUB...")
     output_file = html_file.split(".html")[0] + ".epub"
-    doc = aw.Document(html_file)
-    doc.save(output_file)
-    print(f"Saved {output_file}")
+    from ebooklib import epub
+
+    book = epub.EpubBook()
+
+    # set metadata
+    book.set_title(f"{story_name")
+    book.set_language("en")
+    with open(html_file, 'r') as dosya:
+        content = dosya.read()
+    # create chapter
+    c1 = epub.EpubHtml(title="Intro", file_name="chap_01.xhtml", lang="hr")
+    c1.content = (content)
+    book.add_item(c1)
+    try:
+        epub.write_epub(output_file, book, {}) 
+    except Exception as e:
+        print(e) 
+        output_file = "yok" 
     return output_file
-
-
+    
+    
 async def main(id):
     story_id = id
     # Getting JSON data from Wattpad API.
