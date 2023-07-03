@@ -7,6 +7,7 @@ import pypandoc
 import os
 from pyrogram import Client, filters
 import aspose.words as aw
+from ebooklib import epub
 
 base_apiV2_url = "https://www.wattpad.com/apiv2/"
 base_apiV3_url = "https://www.wattpad.com/api/v3/"
@@ -98,7 +99,7 @@ def save_epub_file(html_file, story_name, cover):
     """Converts the HTML file to EPUB format and saves it."""
     print("Generating EPUB...")
     output_file = html_file.split(".html")[0] + ".epub"
-    from ebooklib import epub
+    
 
     book = epub.EpubBook()
 
