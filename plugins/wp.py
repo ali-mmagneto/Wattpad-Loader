@@ -157,12 +157,14 @@ async def wpdl(bot, message):
         epub, html = await main(id)
         await m.edit("Kitap Yükleniyor..")
         if epub != "yok":
+            capt = f"{epub}\n\n#wattpad"
             await message.reply_document(
                 document=epub,
-                caption=epub
+                caption=capt
             )
         else:
             await message.reply_text("bu kitabı epub yapamadım..")
+        capt = f"{html}\n\n#wattpad"
         await message.reply_document(
             document=html,
             caption=html
