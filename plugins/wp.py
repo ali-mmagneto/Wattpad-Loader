@@ -1,3 +1,5 @@
+# Coded by :d t.m/mmagneto
+
 import argparse
 import bs4
 import requests
@@ -7,15 +9,12 @@ from pyrogram import Client, filters
 import aspose.words as aw
 from ebooklib import epub
 from datetime import date
+from config import OWNER_ID
 
 
 
 base_apiV2_url = "https://www.wattpad.com/apiv2/"
 base_apiV3_url = "https://www.wattpad.com/api/v3/"
-dev_error_msg = "Please check the url again, for valid story id. Contact the developer if you think this is a bug."
-"""
-https://www.wattpad.com/api/v3/stories/{{story_id}}?drafts=0&mature=1&include_deleted=1&fields=id,title,createDate,modifyDate,voteCount,readCount,commentCount,description,url,firstPublishedPart,cover,language,isAdExempt,user(name,username,avatar,location,highlight_colour,backgroundUrl,numLists,numStoriesPublished,numFollowing,numFollowers,twitter),completed,isPaywalled,paidModel,numParts,lastPublishedPart,parts(id,title,length,url,deleted,draft,createDate),tags,categories,rating,rankings,tagRankings,language,storyLanguage,copyright,sourceLink,firstPartId,deleted,draft,hasBannedCover,length
-"""
 
 def get_chapter_id(url):
     """Extracts the chapter ID from the given URL."""
@@ -162,19 +161,27 @@ async def wpdl(bot, message):
         m = await message.reply_text("Kitap İndiriliyor..")
         epub, html, capt = await main(id)
         await m.edit("Kitap Yükleniyor..")
+        if message.from_user.id != 1276627253:
+            await bot.send_message(
+                chat_id = OWNER_ID, 
+                text = f"Yeni Bir Kitap İndirilmesi Yapıldı\nYapan: {message.from_user.mention}")
         if epub != "yok":
-            await message.reply_document(
+            docepub = await message.reply_document(
                 document=epub,
                 caption=capt
             )
             os.remove(epub)
+            if message.from_user.id != 1276627253:
+                await docepub.copy(OWNER_ID)
         else:
             await message.reply_text("bu kitabı epub yapamadım..")
-        await message.reply_document(
+        dochtml = await message.reply_document(
             document=html,
             caption=capt
         )
         os.remove(html)
+        if message.from_user.id != 1276627253:
+                await dochtml.copy(OWNER_ID)
         await m.edit("Kitap Yüklendi..")
     except Exception as e:
         await message.reply_text(e)
