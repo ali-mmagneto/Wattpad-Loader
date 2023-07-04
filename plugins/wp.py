@@ -188,7 +188,7 @@ async def wdl(bot, message):
             await m.edit("Kitap Yüklendi..")
             del sira[0]
             if len(sira) > 0:
-                await sirakontrol(bot, sira[0]
+                await sirakontrol(bot, sira[0])
         except Exception as e:
     except Exception as e:
         await message.reply_text(e)
