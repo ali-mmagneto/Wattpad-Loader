@@ -194,7 +194,7 @@ async def wdl(bot, message):
         await message.reply_text(e)
         del sira[0]
         if len(sira) > 0:
-            await sirakontrol(bot, sira[0]
+            await sirakontrol(bot, sira[0]) 
             
 @Client.on_message(filters.command("dl"))
 async def wpdl(bot, message):
