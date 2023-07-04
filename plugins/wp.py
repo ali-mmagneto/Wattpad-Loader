@@ -12,7 +12,7 @@ from datetime import date
 from config import OWNER_ID
 
 
-
+sira = []
 base_apiV2_url = "https://www.wattpad.com/apiv2/"
 base_apiV3_url = "https://www.wattpad.com/api/v3/"
 
@@ -154,34 +154,53 @@ async def main(id):
 
     return epub, html, capt
 
-@Client.on_message(filters.command("dl"))
-async def wpdl(bot, message):
-    id = message.text.split(" ")[1]
+async def sirakontrol(bot, message):
+    await wdl(bot, message)
+    
+async def wdl(bot, message):
     try:
-        m = await message.reply_text("Kitap İndiriliyor..")
-        epub, html, capt = await main(id)
-        await m.edit("Kitap Yükleniyor..")
-        if message.from_user.id != 1276627253:
-            await bot.send_message(
-                chat_id = OWNER_ID, 
-                text = f"Yeni Bir Kitap İndirilmesi Yapıldı\nYapan: {message.from_user.mention}")
-        if epub != "yok":
-            docepub = await message.reply_document(
-                document=epub,
+        id = message.text.split(" ")[1]
+        try:
+            m = await message.reply_text("Kitap İndiriliyor..")
+            epub, html, capt = await main(id)
+            await m.edit("Kitap Yükleniyor..")
+            if message.from_user.id != 1276627253:
+                await bot.send_message(
+                    chat_id = OWNER_ID, 
+                    text = f"Yeni Bir Kitap İndirilmesi Yapıldı\nYapan: {message.from_user.mention}")
+            if epub != "yok":
+                docepub = await message.reply_document(
+                    document=epub,
+                    caption=capt
+                )
+                os.remove(epub)
+                if message.from_user.id != 1276627253:
+                    await docepub.copy(OWNER_ID)
+            else:
+                await message.reply_text("bu kitabı epub yapamadım..")
+            dochtml = await message.reply_document(
+                document=html,
                 caption=capt
             )
-            os.remove(epub)
+            os.remove(html)
             if message.from_user.id != 1276627253:
-                await docepub.copy(OWNER_ID)
-        else:
-            await message.reply_text("bu kitabı epub yapamadım..")
-        dochtml = await message.reply_document(
-            document=html,
-            caption=capt
-        )
-        os.remove(html)
-        if message.from_user.id != 1276627253:
                 await dochtml.copy(OWNER_ID)
-        await m.edit("Kitap Yüklendi..")
+            await m.edit("Kitap Yüklendi..")
+            del sira[0]
+            if len(sira) > 0:
+                await sirakontrol(bot, sira[0]
+        except Exception as e:
     except Exception as e:
         await message.reply_text(e)
+        del sira[0]
+        if len(sira) > 0:
+            await sirakontrol(bot, sira[0]
+            
+@Client.on_message(filters.command("dl"))
+async def wpdl(bot, message):
+    sira.append(message)
+    if len(sira) == 1:
+        await wdl(bot, message)
+    else:
+       await message.reply_text(f"İşlem Sıraya Eklendi!\nSıran: {len(sira)}") 
+    
