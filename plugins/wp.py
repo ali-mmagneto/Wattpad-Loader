@@ -190,6 +190,10 @@ async def wdl(bot, message):
             if len(sira) > 0:
                 await sirakontrol(bot, sira[0])
         except Exception as e:
+            await message.reply_text(e)
+            del sira[0]
+            if len(sira) > 0:
+                await sirakontrol(bot, sira[0])
     except Exception as e:
         await message.reply_text(e)
         del sira[0]
